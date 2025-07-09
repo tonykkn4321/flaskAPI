@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
@@ -48,6 +48,13 @@ def create_app():
     return app
 
 app = create_app()
+
+@app.route('/authors', methods = ['GET'])
+def index():
+    get_authors = Author.query.all()
+    author_schema = AuthorSchema(many=True)
+    authors = author_schema.dump(get_authors)
+    return make_response(jsonify({"authors": authors}))
 
 if __name__ == "__main__":
     app.run(debug=True)
