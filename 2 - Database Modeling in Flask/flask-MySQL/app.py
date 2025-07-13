@@ -33,7 +33,8 @@ class AuthorSchema(SQLAlchemyAutoSchema):
     class Meta(SQLAlchemyAutoSchema.Meta):
         model = Author
         sqla_session = db.session        
-    id = fields.Number(dump_only=True)
+        load_instance = True  # This enables .load() to return an Author object
+    id = fields.Integer(dump_only=True)         # Usse Integer instead of Number
     name = fields.String(required=True)
     specialisation = fields.String(required=True)
 
@@ -55,6 +56,20 @@ def index():
     author_schema = AuthorSchema(many=True)
     authors = author_schema.dump(get_authors)
     return make_response(jsonify({"authors": authors}))
+
+@app.route('/authors', methods=['POST'])
+def create_author():
+    data = request.get_json()
+    author_schema = AuthorSchema()
+
+    try:
+        author = author_schema.load(data)
+        db.session.add(author)
+        db.session.commit()
+        result = author_schema.dump(author)
+        return make_response(jsonify({"author": result}), 201)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), 400)
 
 if __name__ == "__main__":
     app.run(debug=True)
