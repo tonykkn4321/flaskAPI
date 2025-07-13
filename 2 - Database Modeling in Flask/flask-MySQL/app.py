@@ -94,6 +94,13 @@ def update_author_by_id(id):
     author = author_schema.dump(get_author)
     return make_response(jsonify({"author": author}))
 
+@app.route('/authors/<id>', methods = ['DELETE'])
+def delete_author_by_id(id):
+    get_author = Author.query.get(id)
+    db.session.delete(get_author)
+    db.session.commit()
+    return make_response("",204)
+
 if __name__ == "__main__":
     app.run(debug=True)
 
