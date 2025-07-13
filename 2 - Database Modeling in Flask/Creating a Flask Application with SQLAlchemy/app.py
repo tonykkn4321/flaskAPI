@@ -34,7 +34,7 @@ class AuthorSchema(SQLAlchemyAutoSchema):
         model = Author
         sqla_session = db.session        
         load_instance = True  # This enables .load() to return an Author object
-    id = fields.Integer(dump_only=True)         # Use Integer instead of Number
+    id = fields.Integer(dump_only=True)         ## Use Integer instead of Number
     name = fields.String(required=True)
     specialisation = fields.String(required=True)
 
