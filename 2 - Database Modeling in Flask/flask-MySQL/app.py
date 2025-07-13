@@ -34,7 +34,7 @@ class AuthorSchema(SQLAlchemyAutoSchema):
         model = Author
         sqla_session = db.session        
         load_instance = True  # This enables .load() to return an Author object
-    id = fields.Integer(dump_only=True)         # Usse Integer instead of Number
+    id = fields.Integer(dump_only=True)         # Use Integer instead of Number
     name = fields.String(required=True)
     specialisation = fields.String(required=True)
 
@@ -70,6 +70,14 @@ def create_author():
         return make_response(jsonify({"author": result}), 201)
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 400)
+
+
+@app.route('/authors/<id>', methods = ['GET'])
+def get_author_by_id(id):
+    get_author = Author.query.get(id)
+    author_schema = AuthorSchema()
+    author = author_schema.dump(get_author)
+    return make_response(jsonify({"author": author}))
 
 if __name__ == "__main__":
     app.run(debug=True)
