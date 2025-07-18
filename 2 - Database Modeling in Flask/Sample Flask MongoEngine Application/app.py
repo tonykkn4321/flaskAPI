@@ -34,6 +34,14 @@ def index():
     return make_response(jsonify({"authors": authors}))
 
 
+@app.route('/authors', methods = ['POST'])
+def create_author():
+    data = request.get_json()
+    author = Authors(name=data['name'],specialisation=data['specialisation'])
+    author.save()
+    author_schema = AuthorsSchema(only=['name','specialisation'])
+    authors = author_schema.dump(author)
+    return make_response(jsonify({"author": authors}),201)
 
 if __name__ == "__main__":
     app.run(debug=True)
